@@ -77,6 +77,7 @@ class AudioToAudioTestCase(TestCase):
 
     def test_dual_channel_audiofile(self):
         bpayload = self.read("sample1_dual.ogg")
+
         with TestClient(self.app) as client:
             response = client.post("/", data=bpayload)
 
@@ -98,6 +99,7 @@ class AudioToAudioTestCase(TestCase):
 
     def test_webm_audiofile(self):
         bpayload = self.read("sample1.webm")
+
         with TestClient(self.app) as client:
             response = client.post("/", data=bpayload)
 

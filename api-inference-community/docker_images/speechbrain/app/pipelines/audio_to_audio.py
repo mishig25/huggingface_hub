@@ -10,13 +10,17 @@ from huggingface_hub import HfApi
 class AudioToAudioPipeline(Pipeline):
     def __init__(self, model_id: str):
         info = HfApi().model_info(model_id)
-        tags = [tag.lower().replace(" ", "-").replace("_", "-") for tag in info.tags]
+        tags = info.tags
         if "audio-source-separation" in tags:
             self.model = SepformerSeparation.from_hparams(source=model_id)
             self.type = "audio-source-separation"
         elif "speech-enhancement" in tags:
             self.model = SpectralMaskEnhancement.from_hparams(source=model_id)
             self.type = "speech-enhancement"
+        else:
+            raise ValueError(
+                "speechbrain needs to know if this model is `speech-enhancement` or `audio-source-separation`, please add one of this tag to enable inference"
+            )
         self.sampling_rate = self.model.hparams.sample_rate
 
     def __call__(self, inputs: np.array) -> Tuple[np.array, int, List[str]]:
