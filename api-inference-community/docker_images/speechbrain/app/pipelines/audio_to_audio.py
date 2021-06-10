@@ -4,23 +4,13 @@ import numpy as np
 import torch
 from app.pipelines import Pipeline
 from speechbrain.pretrained import SepformerSeparation, SpectralMaskEnhancement
-import requests
-import json
-
-
-def get_info(model_id: str):
-    ENDPOINT = "https://huggingface.co/api/models/"
-    response = requests.get(f"{ENDPOINT}{model_id}")
-    if response.status_code != 200:
-        raise Exception("Cannot infer the code properly, please set some tags")
-    model_info = json.loads(response.content.decode("utf-8"))
-    tags = [tag.lower().replace(" ", "-").replace("_", "-") for tag in model_info["tags"]]
-    return tags
+from huggingface_hub import HfApi
 
 
 class AudioToAudioPipeline(Pipeline):
     def __init__(self, model_id: str):
-        tags = get_info(model_id)
+        info = HfApi().model_info(model_id)
+        tags = [tag.lower().replace(" ", "-").replace("_", "-") for tag in info.tags]
         if "audio-source-separation" in tags:
             self.model = SepformerSeparation.from_hparams(source=model_id)
             self.type = "audio-source-separation"

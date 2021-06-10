@@ -2,3 +2,4 @@ starlette==0.14.2
 api-inference-community==0.0.7
 speechbrain==0.5.7
 transformers==4.5.1
+huggingface_hub==0.0.10
