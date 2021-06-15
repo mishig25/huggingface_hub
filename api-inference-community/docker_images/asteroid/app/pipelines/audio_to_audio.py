@@ -27,9 +27,7 @@ class AudioToAudioPipeline(Pipeline):
                     This can be the name of the instruments for audio source separation
                     or some annotation for speech enhancement. The length must be `C'`.
         """
-        separated = separate.numpy_separate(self.model, inputs.reshape((1, 1, -1)))
-        # FIXME: how to deal with multiple sources?
-        out = separated[0]
+        out = separate.numpy_separate(self.model, inputs.reshape((1, -1)))
         n = out.shape[0]
         labels = [f"label_{i}" for i in range(n)]
         return separated[0], int(self.model.sample_rate), labels
